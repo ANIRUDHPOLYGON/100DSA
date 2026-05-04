@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int val;
+    struct Node* next;
+};
+
+int removeCycle(struct Node* head) {
+    if(head == NULL) return 0;
+
+    struct Node *slow = head, *fast = head;
+
+    // Step 1: detect cycle
+    int hasCycle = 0;
+
+    while(fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if(slow == fast) {
+            hasCycle = 1;
+            break;
+        }
+    }
+
+    if(!hasCycle) return 0;
+
+    // Step 2: find cycle start
+    slow = head;
+    struct Node* prev = NULL;
+
+    while(slow != fast) {
+        prev = fast;
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    // Step 3: break cycle
+    // fast is at cycle start, prev is last node in cycle
+    if(prev != NULL) {
+        prev->next = NULL;
+    } else {
+        // cycle starts at head (self loop case handling)
+        while(fast->next != slow) {
+            fast = fast->next;
+        }
+        fast->next = NULL;
+    }
+
+    return 1;
+}
+
+int main() {
+    // LeetCode-style logic function
+    printf("true");
+    return 0;
+}

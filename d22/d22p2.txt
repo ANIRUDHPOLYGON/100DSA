@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    int val;
+    struct ListNode* next;
+};
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    struct ListNode *head = NULL, *temp = NULL, *newNode = NULL;
+
+    // create linked list
+    for(int i = 0; i < n; i++) {
+        newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+        scanf("%d", &newNode->val);
+        newNode->next = NULL;
+
+        if(head == NULL) {
+            head = newNode;
+            temp = head;
+        } else {
+            temp->next = newNode;
+            temp = newNode;
+        }
+    }
+
+    // reverse list
+    struct ListNode *prev = NULL;
+    struct ListNode *curr = head;
+    struct ListNode *next = NULL;
+
+    while(curr != NULL) {
+        next = curr->next;   // store next
+        curr->next = prev;   // reverse link
+        prev = curr;         // move prev
+        curr = next;         // move curr
+    }
+
+    head = prev;
+
+    // print reversed list
+    temp = head;
+    while(temp != NULL) {
+        printf("%d ", temp->val);
+        temp = temp->next;
+    }
+
+    return 0;
+}

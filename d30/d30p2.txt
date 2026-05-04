@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 200
+
+struct ListNode {
+    int val;
+    struct ListNode* next;
+};
+
+// stack
+int s1[MAX], s2[MAX];
+int top1 = -1, top2 = -1;
+
+void push(int *s, int *top, int val) {
+    s[++(*top)] = val;
+}
+
+int pop(int *s, int *top) {
+    return s[(*top)--];
+}
+
+struct ListNode* createNode(int val) {
+    struct ListNode* node = (struct ListNode*)malloc(sizeof(struct ListNode));
+    node->val = val;
+    node->next = NULL;
+    return node;
+}
+
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
+
+    // push l1
+    while(l1 != NULL) {
+        push(s1, &top1, l1->val);
+        l1 = l1->next;
+    }
+
+    // push l2
+    while(l2 != NULL) {
+        push(s2, &top2, l2->val);
+        l2 = l2->next;
+    }
+
+    struct ListNode* head = NULL;
+    int carry = 0;
+
+    // process stacks
+    while(top1 != -1 || top2 != -1 || carry != 0) {
+
+        int sum = carry;
+
+        if(top1 != -1) sum += pop(s1, &top1);
+        if(top2 != -1) sum += pop(s2, &top2);
+
+        carry = sum / 10;
+
+        struct ListNode* node = createNode(sum % 10);
+        node->next = head;
+        head = node;
+    }
+
+    return head;
+}

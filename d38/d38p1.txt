@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 1000
+
+int dq[MAX];
+int front = 0, rear = -1, size = 0, cap = MAX;
+
+// check empty
+bool empty() {
+    return size == 0;
+}
+
+// size
+int getSize() {
+    return size;
+}
+
+// push front
+void push_front(int x) {
+    if(size == cap) return;
+
+    front = (front - 1 + cap) % cap;
+    dq[front] = x;
+
+    if(size == 0) rear = front;
+
+    size++;
+}
+
+// push back
+void push_back(int x) {
+    if(size == cap) return;
+
+    rear = (rear + 1) % cap;
+    dq[rear] = x;
+
+    if(size == 0) front = rear;
+
+    size++;
+}
+
+// pop front
+int pop_front() {
+    if(empty()) return -1;
+
+    int val = dq[front];
+    front = (front + 1) % cap;
+    size--;
+
+    return val;
+}
+
+// pop back
+int pop_back() {
+    if(empty()) return -1;
+
+    int val = dq[rear];
+    rear = (rear - 1 + cap) % cap;
+    size--;
+
+    return val;
+}
+
+// front element
+int get_front() {
+    if(empty()) return -1;
+    return dq[front];
+}
+
+// back element
+int get_back() {
+    if(empty()) return -1;
+    return dq[rear];
+}
+
+// clear
+void clear() {
+    front = 0;
+    rear = -1;
+    size = 0;
+}

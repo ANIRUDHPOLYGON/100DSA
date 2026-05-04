@@ -1,0 +1,45 @@
+#include <stdio.h>
+
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    char tasks[10000];
+    int freq[26] = {0};
+    int size = 0;
+
+    char c;
+
+    // read tasks until newline / EOF
+    while (scanf(" %c", &c) == 1) {
+        tasks[size++] = c;
+        if (getchar() == '\n') break;
+    }
+
+    // frequency count
+    for (int i = 0; i < size; i++) {
+        freq[tasks[i] - 'A']++;
+    }
+
+    int fmax = 0;
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] > fmax)
+            fmax = freq[i];
+    }
+
+    int kmax = 0;
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] == fmax)
+            kmax++;
+    }
+
+    int part = (fmax - 1) * (n + 1) + kmax;
+
+    printf("%d\n", max(part, size));
+
+    return 0;
+}

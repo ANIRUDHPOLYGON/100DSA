@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int val;
+    struct Node *left, *right;
+} Node;
+
+Node* newNode(int x) {
+    Node* n = (Node*)malloc(sizeof(Node));
+    n->val = x;
+    n->left = n->right = NULL;
+    return n;
+}
+
+/* Stack */
+Node* stack[100];
+int top = -1;
+
+void push(Node* n) {
+    stack[++top] = n;
+}
+
+Node* pop() {
+    return stack[top--];
+}
+
+int empty() {
+    return top == -1;
+}
+
+/* Preorder iterative */
+void preorder(Node* root) {
+    if (!root) return;
+
+    push(root);
+
+    while (!empty()) {
+        Node* curr = pop();
+        printf("%d ", curr->val);
+
+        if (curr->right) push(curr->right);
+        if (curr->left) push(curr->left);
+    }
+}
+
+/* Example tree */
+int main() {
+    Node* root = newNode(1);
+    root->right = newNode(2);
+    root->right->left = newNode(3);
+
+    preorder(root);
+
+    return 0;
+}

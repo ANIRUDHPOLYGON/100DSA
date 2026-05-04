@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+#define MAX 100
+
+int s1[MAX], s2[MAX];
+int top1 = -1, top2 = -1;
+
+// stack ops
+void push1(int x) { s1[++top1] = x; }
+void push2(int x) { s2[++top2] = x; }
+
+int pop1() { return s1[top1--]; }
+int pop2() { return s2[top2--]; }
+
+int empty1() { return top1 == -1; }
+int empty2() { return top2 == -1; }
+
+// transfer s1 -> s2
+void transfer() {
+    while(!empty1()) {
+        push2(pop1());
+    }
+}
+
+// Queue operations
+void push(int x) {
+    push1(x);
+}
+
+int pop() {
+    if(empty2()) transfer();
+    return pop2();
+}
+
+int peek() {
+    if(empty2()) transfer();
+    return s2[top2];
+}
+
+int empty() {
+    return empty1() && empty2();
+}

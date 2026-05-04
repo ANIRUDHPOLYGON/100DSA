@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Queue node
+struct QNode {
+    struct TreeNode *node;
+    struct QNode *next;
+};
+
+struct Queue {
+    struct QNode *front, *rear;
+};
+
+struct Queue* createQueue() {
+    struct Queue *q = (struct Queue*)malloc(sizeof(struct Queue));
+    q->front = q->rear = NULL;
+    return q;
+}
+
+void enqueue(struct Queue *q, struct TreeNode *node) {
+    if (!node) return;
+
+    struct QNode *temp = (struct QNode*)malloc(sizeof(struct QNode));
+    temp->node = node;
+    temp->next = NULL;
+
+    if (!q->rear) {
+        q->front = q->rear = temp;
+        return;
+    }
+
+    q->rear->next = temp;
+    q->rear = temp;
+}
+
+struct TreeNode* dequeue(struct Queue *q) {
+    if (!q->front) return NULL;
+
+    struct QNode *temp = q->front;
+    struct TreeNode *node = temp->node;
+
+    q->front = q->front->next;
+    if (!q->front) q->rear = NULL;
+
+    free(temp);
+    return node;
+}
+
+int isEmpty(struct Queue *q) {
+    return q->front == NULL;
+}
+
+/* Result storage (simple static 2D array style) */
+int result[2000][2000];
+int colSize[2000];
+int rowCount = 0;
+
+void levelOrder(struct TreeNode* root) {
+    if (!root) return;
+
+    struct Queue *q = createQueue();
+    enqueue(q, root);
+
+    while (!isEmpty(q)) {
+        int size = 0;
+        struct QNode *t = q->front;
+        while (t) { size++; t = t->next; }
+
+        colSize[rowCount] = size;
+
+        for (int i = 0; i < size; i++) {
+            struct TreeNode *curr = dequeue(q);
+            result[rowCount][i] = curr->val;
+
+            if (curr->left) enqueue(q, curr->left);
+            if (curr->right) enqueue(q, curr->right);
+        }
+
+        rowCount++;
+    }
+}

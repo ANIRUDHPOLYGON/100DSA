@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+struct TreeNode* createNode(int val) {
+    struct TreeNode* node = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    node->val = val;
+    node->left = node->right = NULL;
+    return node;
+}
+
+struct TreeNode* insertBST(struct TreeNode* root, int key) {
+    if (root == NULL)
+        return createNode(key);
+
+    if (key < root->val)
+        root->left = insertBST(root->left, key);
+    else if (key > root->val)
+        root->right = insertBST(root->right, key);
+
+    return root;
+}

@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int val;
+    struct Node *left, *right;
+} Node;
+
+Node* newNode(int x) {
+    Node* n = (Node*)malloc(sizeof(Node));
+    n->val = x;
+    n->left = n->right = NULL;
+    return n;
+}
+
+void inorder(Node* root) {
+    if (root == NULL) return;
+
+    inorder(root->left);
+    printf("%d ", root->val);
+    inorder(root->right);
+}
+
+/* Example tree builder for testing (not required in LeetCode) */
+Node* createSample() {
+    Node* root = newNode(1);
+    root->right = newNode(2);
+    root->right->left = newNode(3);
+    return root;
+}
+
+int main() {
+    Node* root = createSample();
+
+    inorder(root);
+
+    return 0;
+}

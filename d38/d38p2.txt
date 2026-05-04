@@ -1,0 +1,70 @@
+#include <stdio.h>
+
+#define MAX 100000
+
+int dq[MAX];
+int front = 0, rear = -1;
+
+void pop_front() {
+    front++;
+}
+
+void pop_back() {
+    rear--;
+}
+
+int front_val() {
+    return dq[front];
+}
+
+int back_val() {
+    return dq[rear];
+}
+
+int empty() {
+    return front > rear;
+}
+
+void push_back(int x) {
+    dq[++rear] = x;
+}
+
+int main() {
+    int n, k;
+    scanf("%d", &n);
+
+    int nums[n];
+    for(int i = 0; i < n; i++) {
+        scanf("%d", &nums[i]);
+    }
+
+    scanf("%d", &k);
+
+    int res[n];
+    int idx = 0;
+
+    front = 0; rear = -1;
+
+    for(int i = 0; i < n; i++) {
+
+        // remove out of window
+        if(!empty() && dq[front] <= i - k)
+            pop_front();
+
+        // maintain decreasing order
+        while(!empty() && nums[dq[rear]] <= nums[i])
+            pop_back();
+
+        push_back(i);
+
+        // start storing result
+        if(i >= k - 1)
+            res[idx++] = nums[dq[front]];
+    }
+
+    for(int i = 0; i < idx; i++) {
+        printf("%d ", res[i]);
+    }
+
+    return 0;
+}

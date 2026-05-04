@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX 100000
+
+int stack[MAX];
+int top = -1;
+
+void push(int x) {
+    stack[++top] = x;
+}
+
+int pop() {
+    return stack[top--];
+}
+
+int main() {
+    char s[MAX];
+    fgets(s, MAX, stdin);
+
+    int num = 0;
+    char sign = '+';
+
+    for(int i = 0; s[i] != '\0'; i++) {
+
+        char c = s[i];
+
+        if(isdigit(c)) {
+            num = num * 10 + (c - '0');
+        }
+
+        // if operator or end of string
+        if((!isdigit(c) && c != ' ') || s[i+1] == '\0') {
+
+            if(sign == '+') push(num);
+            else if(sign == '-') push(-num);
+            else if(sign == '*') {
+                int a = pop();
+                push(a * num);
+            }
+            else if(sign == '/') {
+                int a = pop();
+                push(a / num);   // truncates toward 0 in C
+            }
+
+            sign = c;
+            num = 0;
+        }
+    }
+
+    int result = 0;
+    for(int i = 0; i <= top; i++) {
+        result += stack[i];
+    }
+
+    printf("%d\n", result);
+
+    return 0;
+}

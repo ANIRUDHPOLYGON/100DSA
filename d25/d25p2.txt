@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct ListNode {
+    int val;
+    struct ListNode* next;
+};
+
+struct ListNode* detectCycle(struct ListNode* head) {
+    struct ListNode *slow = head, *fast = head;
+
+    // Step 1: detect cycle
+    while(fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if(slow == fast) {
+            // Step 2: find cycle start
+            struct ListNode* start = head;
+
+            while(start != slow) {
+                start = start->next;
+                slow = slow->next;
+            }
+
+            return start;
+        }
+    }
+
+    return NULL;
+}
+
+int main() {
+    // Function logic only (LeetCode-style problem)
+    printf("Cycle detection + start node logic implemented.\n");
+    return 0;
+}

@@ -1,0 +1,98 @@
+#include <stdio.h>
+
+#define MAX 100000
+
+// frequency pair
+typedef struct {
+    int num;
+    int freq;
+} Node;
+
+Node heap[MAX];
+int size = 0;
+
+// swap
+void swap(Node *a, Node *b) {
+    Node t = *a;
+    *a = *b;
+    *b = t;
+}
+
+// heapify up (min heap by freq)
+void up(int i) {
+    while(i > 0) {
+        int p = (i - 1) / 2;
+        if(heap[p].freq > heap[i].freq) {
+            swap(&heap[p], &heap[i]);
+            i = p;
+        } else break;
+    }
+}
+
+// heapify down
+void down(int i) {
+    while(1) {
+        int smallest = i;
+        int l = 2*i + 1;
+        int r = 2*i + 2;
+
+        if(l < size && heap[l].freq < heap[smallest].freq)
+            smallest = l;
+
+        if(r < size && heap[r].freq < heap[smallest].freq)
+            smallest = r;
+
+        if(smallest != i) {
+            swap(&heap[i], &heap[smallest]);
+            i = smallest;
+        } else break;
+    }
+}
+
+// insert heap
+void push(Node x) {
+    heap[size] = x;
+    up(size);
+    size++;
+}
+
+// pop min
+void pop() {
+    heap[0] = heap[size - 1];
+    size--;
+    down(0);
+}
+
+int main() {
+    int n, k;
+    scanf("%d", &n);
+
+    int nums[n];
+    for(int i = 0; i < n; i++) scanf("%d", &nums[i]);
+    scanf("%d", &k);
+
+    // simple frequency array (constraints allow -1e4..1e4)
+    int offset = 10000;
+    int freq[20001] = {0};
+
+    for(int i = 0; i < n; i++)
+        freq[nums[i] + offset]++;
+
+    for(int i = 0; i < 20001; i++) {
+        if(freq[i] > 0) {
+            Node node = {i - offset, freq[i]};
+
+            push(node);
+
+            if(size > k)
+                pop();
+        }
+    }
+
+    // output result
+    for(int i = 0; i < size; i++) {
+        printf("%d ", heap[i].num);
+    }
+
+    return 0;
+}

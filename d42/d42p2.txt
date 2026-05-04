@@ -1,0 +1,122 @@
+#include <stdio.h>
+
+#define MAX 50000
+
+// max heap
+int maxHeap[MAX], maxSize = 0;
+
+// min heap
+int minHeap[MAX], minSize = 0;
+
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+/* ---------- MAX HEAP ---------- */
+void maxPush(int val) {
+    int i = maxSize++;
+    maxHeap[i] = val;
+
+    while (i > 0 && maxHeap[(i - 1) / 2] < maxHeap[i]) {
+        swap(&maxHeap[i], &maxHeap[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+int maxPop() {
+    int root = maxHeap[0];
+    maxHeap[0] = maxHeap[--maxSize];
+
+    int i = 0;
+    while (1) {
+        int l = 2 * i + 1, r = 2 * i + 2, largest = i;
+
+        if (l < maxSize && maxHeap[l] > maxHeap[largest])
+            largest = l;
+        if (r < maxSize && maxHeap[r] > maxHeap[largest])
+            largest = r;
+
+        if (largest == i) break;
+
+        swap(&maxHeap[i], &maxHeap[largest]);
+        i = largest;
+    }
+
+    return root;
+}
+
+/* ---------- MIN HEAP ---------- */
+void minPush(int val) {
+    int i = minSize++;
+    minHeap[i] = val;
+
+    while (i > 0 && minHeap[(i - 1) / 2] > minHeap[i]) {
+        swap(&minHeap[i], &minHeap[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+int minPop() {
+    int root = minHeap[0];
+    minHeap[0] = minHeap[--minSize];
+
+    int i = 0;
+    while (1) {
+        int l = 2 * i + 1, r = 2 * i + 2, smallest = i;
+
+        if (l < minSize && minHeap[l] < minHeap[smallest])
+            smallest = l;
+        if (r < minSize && minHeap[r] < minHeap[smallest])
+            smallest = r;
+
+        if (smallest == i) break;
+
+        swap(&minHeap[i], &minHeap[smallest]);
+        i = smallest;
+    }
+
+    return root;
+}
+
+/* ---------- CORE ---------- */
+void addNum(int num) {
+    maxPush(num);
+
+    // balance step
+    minPush(maxPop());
+
+    if (minSize > maxSize) {
+        maxPush(minPop());
+    }
+}
+
+double findMedian() {
+    if (maxSize > minSize)
+        return maxHeap[0];
+
+    return (maxHeap[0] + minHeap[0]) / 2.0;
+}
+
+/* ---------- DRIVER (simple simulation) ---------- */
+int main() {
+    int ops;
+    scanf("%d", &ops);
+
+    while (ops--) {
+        char cmd[20];
+        scanf("%s", cmd);
+
+        if (cmd[0] == 'a') { // addNum
+            int x;
+            scanf("%d", &x);
+            addNum(x);
+        } 
+        else { // findMedian
+            printf("%.1f\n", findMedian());
+        }
+    }
+
+    return 0;
+}
