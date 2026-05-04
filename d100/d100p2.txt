@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int val;
+    int idx;
+} Node;
+
+void merge(Node arr[], int temp[], int count[], int l, int m, int r) {
+    int i = l, j = m + 1, k = l;
+    int rightCount = 0;
+
+    while (i <= m && j <= r) {
+        if (arr[i].val <= arr[j].val) {
+            count[arr[i].idx] += rightCount;
+            temp[k++] = arr[i++].val;
+        } else {
+            rightCount++;
+            temp[k++] = arr[j++].val;
+        }
+    }
+
+    while (i <= m) {
+        count[arr[i].idx] += rightCount;
+        temp[k++] = arr[i++].val;
+    }
+
+    while (j <= r) {
+        temp[k++] = arr[j++].val;
+    }
+
+    for (i = l; i <= r; i++)
+        arr[i].val = temp[i];
+}
+
+void mergeSort(Node arr[], int temp[], int count[], int l, int r) {
+    if (l >= r) return;
+
+    int m = (l + r) / 2;
+
+    mergeSort(arr, temp, count, l, m);
+    mergeSort(arr, temp, count, m + 1, r);
+    merge(arr, temp, count, l, m, r);
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int nums[n];
+    Node arr[n];
+    int temp[n];
+    int count[n];
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &nums[i]);
+        arr[i].val = nums[i];
+        arr[i].idx = i;
+        count[i] = 0;
+    }
+
+    mergeSort(arr, temp, count, 0, n - 1);
+
+    for (int i = 0; i < n; i++)
+        printf("%d ", count[i]);
+
+    return 0;
+}

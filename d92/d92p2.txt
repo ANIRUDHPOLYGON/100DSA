@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition(int a[], int low, int high) {
+    int pivot = a[high];
+    int i = low;
+
+    for (int j = low; j < high; j++) {
+        if (a[j] <= pivot) {
+            swap(&a[i], &a[j]);
+            i++;
+        }
+    }
+
+    swap(&a[i], &a[high]);
+    return i;
+}
+
+int quickSelect(int a[], int low, int high, int k) {
+    if (low <= high) {
+        int pi = partition(a, low, high);
+
+        if (pi == k)
+            return a[pi];
+        else if (pi > k)
+            return quickSelect(a, low, pi - 1, k);
+        else
+            return quickSelect(a, pi + 1, high, k);
+    }
+
+    return -1;
+}
+
+int findKthLargest(int nums[], int n, int k) {
+    int idx = n - k;  // convert to kth smallest
+    return quickSelect(nums, 0, n - 1, idx);
+}
+
+int main() {
+    int n, k;
+    scanf("%d", &n);
+
+    int nums[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &nums[i]);
+
+    scanf("%d", &k);
+
+    printf("%d", findKthLargest(nums, n, k));
+
+    return 0;
+}

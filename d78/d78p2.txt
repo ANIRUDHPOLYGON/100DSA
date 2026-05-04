@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100005
+
+int disc[MAX], low[MAX], parent[MAX];
+bool visited[MAX], isAP[MAX];
+int timer = 0;
+
+void dfs(int u, int adj[][100], int adjSize[], int V) {
+
+    visited[u] = true;
+    disc[u] = low[u] = ++timer;
+
+    int children = 0;
+
+    for (int i = 0; i < adjSize[u]; i++) {
+        int v = adj[u][i];
+
+        if (!visited[v]) {
+            children++;
+            parent[v] = u;
+
+            dfs(v, adj, adjSize, V);
+
+            if (low[v] >= disc[u] && parent[u] != -1)
+                isAP[u] = true;
+
+            if (low[v] < low[u])
+                low[u] = low[v];
+        }
+        else if (v != parent[u]) {
+            if (disc[v] < low[u])
+                low[u] = disc[v];
+        }
+    }
+
+    if (parent[u] == -1 && children > 1)
+        isAP[u] = true;
+}
+
+int* articulationPoints(int V, int adj[][100], int adjSize[], int* returnSize) {
+
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+        parent[i] = -1;
+        isAP[i] = false;
+    }
+
+    timer = 0;
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            dfs(i, adj, adjSize, V);
+        }
+    }
+
+    static int result[MAX];
+    int idx = 0;
+
+    for (int i = 0; i < V; i++) {
+        if (isAP[i]) {
+            result[idx++] = i;
+        }
+    }
+
+    if (idx == 0) {
+        result[idx++] = -1;
+    }
+
+    *returnSize = idx;
+    return result;
+}

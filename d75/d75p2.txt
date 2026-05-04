@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 105
+
+int queue[MAX];
+
+bool bfs(int start, int** graph, int* graphColSize, int n, int color[]) {
+    int front = 0, rear = 0;
+
+    queue[rear++] = start;
+    color[start] = 0;
+
+    while (front < rear) {
+        int node = queue[front++];
+
+        for (int i = 0; i < graphColSize[node]; i++) {
+            int nei = graph[node][i];
+
+            if (color[nei] == -1) {
+                color[nei] = 1 - color[node];
+                queue[rear++] = nei;
+            }
+            else if (color[nei] == color[node]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool isBipartite(int** graph, int graphSize, int* graphColSize) {
+
+    int color[MAX];
+
+    for (int i = 0; i < graphSize; i++)
+        color[i] = -1;
+
+    for (int i = 0; i < graphSize; i++) {
+        if (color[i] == -1) {
+            if (!bfs(i, graph, graphColSize, graphSize, color))
+                return false;
+        }
+    }
+
+    return true;
+}

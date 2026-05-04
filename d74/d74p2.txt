@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+void dfs(int node, int n, int isConnected[][200], bool visited[]) {
+    visited[node] = true;
+
+    for (int i = 0; i < n; i++) {
+        if (isConnected[node][i] == 1 && !visited[i]) {
+            dfs(i, n, isConnected, visited);
+        }
+    }
+}
+
+int findCircleNum(int isConnected[][200], int n) {
+
+    bool visited[200] = {false};
+    int provinces = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            provinces++;
+            dfs(i, n, isConnected, visited);
+        }
+    }
+
+    return provinces;
+}

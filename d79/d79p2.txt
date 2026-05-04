@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100005
+
+int adj[MAX][50], radj[MAX][50];
+int adjSize[MAX], radjSize[MAX];
+
+bool visited[MAX];
+int stack[MAX];
+int top = -1;
+
+void dfs1(int u) {
+    visited[u] = true;
+
+    for (int i = 0; i < adjSize[u]; i++) {
+        int v = adj[u][i];
+        if (!visited[v]) {
+            dfs1(v);
+        }
+    }
+
+    stack[++top] = u;
+}
+
+void dfs2(int u) {
+    visited[u] = true;
+
+    for (int i = 0; i < radjSize[u]; i++) {
+        int v = radj[u][i];
+        if (!visited[v]) {
+            dfs2(v);
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    scanf("%d %d", &V, &E);
+
+    for (int i = 0; i < V; i++) {
+        adjSize[i] = radjSize[i] = 0;
+        visited[i] = false;
+    }
+
+    for (int i = 0; i < E; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+
+        adj[u][adjSize[u]++] = v;
+        radj[v][radjSize[v]++] = u;
+    }
+
+    // Step 1: DFS and fill stack
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            dfs1(i);
+        }
+    }
+
+    // Step 2: reverse visited
+    for (int i = 0; i < V; i++) {
+        visited[i] = false;
+    }
+
+    // Step 3: process in reverse order
+    int countSCC = 0;
+
+    while (top >= 0) {
+        int node = stack[top--];
+
+        if (!visited[node]) {
+            dfs2(node);
+            countSCC++;
+        }
+    }
+
+    printf("%d", countSCC);
+
+    return 0;
+}

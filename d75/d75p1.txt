@@ -1,0 +1,48 @@
+#include <stdio.h>
+
+#define MAX 100000
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // hash table for prefix sum (simple array trick using offset)
+    // but safer approach: linear search style map simulation
+
+    int prefixSum = 0;
+    int maxLen = 0;
+
+    // we store first occurrence of prefix sum manually
+    int sumIndex[MAX];
+    for (int i = 0; i < MAX; i++) sumIndex[i] = -2;
+
+    int offset = 50000; // to handle negatives
+
+    sumIndex[offset] = -1; // prefix sum 0 at index -1
+
+    for (int i = 0; i < n; i++) {
+        prefixSum += arr[i];
+
+        int key = prefixSum + offset;
+
+        if (key >= 0 && key < MAX) {
+
+            if (sumIndex[key] == -2) {
+                sumIndex[key] = i;
+            } else {
+                int len = i - sumIndex[key];
+                if (len > maxLen)
+                    maxLen = len;
+            }
+        }
+    }
+
+    printf("%d", maxLen);
+
+    return 0;
+}

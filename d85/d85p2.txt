@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int findMin(int nums[], int n) {
+    int l = 0, r = n - 1;
+
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+
+        // Mid is in right sorted part → minimum is on right or at mid
+        if (nums[mid] > nums[r])
+            l = mid + 1;
+        else
+            r = mid;
+    }
+
+    return nums[l];
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int nums[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &nums[i]);
+
+    printf("%d", findMin(nums, n));
+
+    return 0;
+}

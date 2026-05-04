@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <limits.h>
+#include <math.h>
+#include <stdbool.h>
+
+int dist(int* a, int* b) {
+    return abs(a[0] - b[0]) + abs(a[1] - b[1]);
+}
+
+int minCostConnectPoints(int** points, int pointsSize, int* pointsColSize) {
+
+    int n = pointsSize;
+
+    int minDist[n];
+    bool visited[n];
+
+    for (int i = 0; i < n; i++) {
+        minDist[i] = INT_MAX;
+        visited[i] = false;
+    }
+
+    minDist[0] = 0;
+
+    int result = 0;
+
+    for (int i = 0; i < n; i++) {
+
+        int u = -1;
+
+        // pick unvisited min
+        for (int j = 0; j < n; j++) {
+            if (!visited[j] && (u == -1 || minDist[j] < minDist[u])) {
+                u = j;
+            }
+        }
+
+        visited[u] = true;
+        result += minDist[u];
+
+        // relax neighbors
+        for (int v = 0; v < n; v++) {
+            if (!visited[v]) {
+                int cost = dist(points[u], points[v]);
+                if (cost < minDist[v]) {
+                    minDist[v] = cost;
+                }
+            }
+        }
+    }
+
+    return result;
+}

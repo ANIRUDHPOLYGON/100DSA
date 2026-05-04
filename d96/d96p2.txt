@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+long long countPairs(int a[], int l, int m, int r) {
+    long long count = 0;
+    int j = m + 1;
+
+    for (int i = l; i <= m; i++) {
+        while (j <= r && (long long)a[i] > 2LL * a[j])
+            j++;
+
+        count += (j - (m + 1));
+    }
+
+    return count;
+}
+
+void merge(int a[], int temp[], int l, int m, int r) {
+    int i = l, j = m + 1, k = l;
+
+    while (i <= m && j <= r) {
+        if (a[i] <= a[j])
+            temp[k++] = a[i++];
+        else
+            temp[k++] = a[j++];
+    }
+
+    while (i <= m)
+        temp[k++] = a[i++];
+
+    while (j <= r)
+        temp[k++] = a[j++];
+
+    for (i = l; i <= r; i++)
+        a[i] = temp[i];
+}
+
+long long mergeSort(int a[], int temp[], int l, int r) {
+    if (l >= r)
+        return 0;
+
+    int m = l + (r - l) / 2;
+
+    long long count = 0;
+
+    count += mergeSort(a, temp, l, m);
+    count += mergeSort(a, temp, m + 1, r);
+    count += countPairs(a, l, m, r);
+    merge(a, temp, l, m, r);
+
+    return count;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int a[n], temp[n];
+
+    for (int i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+
+    printf("%lld", mergeSort(a, temp, 0, n - 1));
+
+    return 0;
+}

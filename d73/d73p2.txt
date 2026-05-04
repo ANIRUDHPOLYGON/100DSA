@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+#define MAX 1000
+
+int parent[MAX];
+
+int find(int x) {
+    if (parent[x] != x)
+        parent[x] = find(parent[x]);
+    return parent[x];
+}
+
+void unionSet(int a, int b) {
+    int pa = find(a);
+    int pb = find(b);
+    parent[pa] = pb;
+}
+
+int* findRedundantConnection(int** edges, int edgesSize, int* edgesColSize, int* returnSize) {
+
+    for (int i = 0; i <= edgesSize; i++)
+        parent[i] = i;
+
+    int* ans = NULL;
+
+    for (int i = 0; i < edgesSize; i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+
+        if (find(u) == find(v)) {
+            ans = edges[i]; // last cycle edge
+        } else {
+            unionSet(u, v);
+        }
+    }
+
+    *returnSize = 2;
+    return ans;
+}

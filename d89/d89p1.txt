@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+int isPossible(int a[], int n, int m, int maxPages) {
+    int students = 1;
+    int pages = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (a[i] > maxPages)
+            return 0;
+
+        if (pages + a[i] <= maxPages) {
+            pages += a[i];
+        } else {
+            students++;
+            pages = a[i];
+
+            if (students > m)
+                return 0;
+        }
+    }
+
+    return 1;
+}
+
+int allocateBooks(int a[], int n, int m) {
+    if (m > n)
+        return -1;
+
+    int low = 0, high = 0;
+
+    for (int i = 0; i < n; i++) {
+        low = max(low, a[i]);
+        high += a[i];
+    }
+
+    int ans = high;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+
+        if (isPossible(a, n, m, mid)) {
+            ans = mid;
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    int a[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+
+    printf("%d", allocateBooks(a, n, m));
+
+    return 0;
+}

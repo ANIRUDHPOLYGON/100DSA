@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define N 15
+#define INF 1e9
+
+int dp[1 << N][N];
+int cost[N][N];
+
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int tsp(int n) {
+
+    int maxMask = 1 << n;
+
+    for (int i = 0; i < maxMask; i++) {
+        for (int j = 0; j < n; j++) {
+            dp[i][j] = INF;
+        }
+    }
+
+    dp[1][0] = 0; // start at city 0
+
+    for (int mask = 0; mask < maxMask; mask++) {
+        for (int i = 0; i < n; i++) {
+
+            if (dp[mask][i] == INF) continue;
+
+            for (int j = 0; j < n; j++) {
+
+                if (!(mask & (1 << j))) {
+
+                    int newMask = mask | (1 << j);
+
+                    dp[newMask][j] = min(dp[newMask][j],
+                                          dp[mask][i] + cost[i][j]);
+                }
+            }
+        }
+    }
+
+    int ans = INF;
+
+    for (int i = 0; i < n; i++) {
+        ans = min(ans, dp[(1 << n) - 1][i] + cost[i][0]);
+    }
+
+    return ans;
+}

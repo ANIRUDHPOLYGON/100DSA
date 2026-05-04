@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+int canPaint(int boards[], int n, int k, long long limit) {
+    int painters = 1;
+    long long sum = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (boards[i] > limit)
+            return 0;
+
+        if (sum + boards[i] <= limit) {
+            sum += boards[i];
+        } else {
+            painters++;
+            sum = boards[i];
+
+            if (painters > k)
+                return 0;
+        }
+    }
+
+    return 1;
+}
+
+long long painterPartition(int boards[], int n, int k) {
+    long long low = 0, high = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (boards[i] > low)
+            low = boards[i];
+        high += boards[i];
+    }
+
+    long long ans = high;
+
+    while (low <= high) {
+        long long mid = low + (high - low) / 2;
+
+        if (canPaint(boards, n, k, mid)) {
+            ans = mid;
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
+
+    return ans;
+}
+
+int main() {
+    int n, k;
+    scanf("%d %d", &n, &k);
+
+    int boards[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d", &boards[i]);
+
+    printf("%lld", painterPartition(boards, n, k));
+
+    return 0;
+}

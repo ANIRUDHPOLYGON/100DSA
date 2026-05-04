@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100005
+
+int timeCounter = 0;
+
+int disc[MAX], low[MAX], visited[MAX];
+int adj[MAX][100];   // simplified adjacency storage (for small constraints)
+int adjSize[MAX];
+
+int bridges[MAX][2];
+int bridgeCount = 0;
+
+void dfs(int u, int parent) {
+
+    visited[u] = 1;
+    disc[u] = low[u] = ++timeCounter;
+
+    for (int i = 0; i < adjSize[u]; i++) {
+        int v = adj[u][i];
+
+        if (v == parent)
+            continue;
+
+        if (!visited[v]) {
+            dfs(v, u);
+
+            if (low[v] > disc[u]) {
+                bridges[bridgeCount][0] = u;
+                bridges[bridgeCount][1] = v;
+                bridgeCount++;
+            }
+
+            if (low[v] < low[u])
+                low[u] = low[v];
+        }
+        else {
+            if (disc[v] < low[u])
+                low[u] = disc[v];
+        }
+    }
+}
+
+int** criticalConnections(int n, int** connections, int connectionsSize,
+                          int* connectionsColSize, int* returnSize,
+                          int** returnColumnSizes) {
+
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+        adjSize[i] = 0;
+    }
+
+    timeCounter = 0;
+    bridgeCount = 0;
+
+    // build adjacency list
+    for (int i = 0; i < connectionsSize; i++) {
+        int u = connections[i][0];
+        int v = connections[i][1];
+
+        adj[u][adjSize[u]++] = v;
+        adj[v][adjSize[v]++] = u;
+    }
+
+    dfs(0, -1);
+
+    int** res = (int**)malloc(sizeof(int*) * bridgeCount);
+    *returnColumnSizes = (int*)malloc(sizeof(int) * bridgeCount);
+
+    for (int i = 0; i < bridgeCount; i++) {
+        res[i] = (int*)malloc(sizeof(int) * 2);
+        res[i][0] = bridges[i][0];
+        res[i][1] = bridges[i][1];
+        (*returnColumnSizes)[i] = 2;
+    }
+
+    *returnSize = bridgeCount;
+    return res;
+}

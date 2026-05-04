@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 1000
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    char names[MAX][100];
+    int freq[MAX] = {0};
+    int used = 0;
+
+    for (int i = 0; i < n; i++) {
+        char name[100];
+        scanf("%s", name);
+
+        int found = -1;
+
+        // check if already stored
+        for (int j = 0; j < used; j++) {
+            if (strcmp(names[j], name) == 0) {
+                found = j;
+                break;
+            }
+        }
+
+        if (found == -1) {
+            strcpy(names[used], name);
+            freq[used] = 1;
+            used++;
+        } else {
+            freq[found]++;
+        }
+    }
+
+    int maxVotes = 0;
+    char winner[100] = "";
+
+    for (int i = 0; i < used; i++) {
+        if (freq[i] > maxVotes) {
+            maxVotes = freq[i];
+            strcpy(winner, names[i]);
+        }
+        else if (freq[i] == maxVotes) {
+            if (strcmp(names[i], winner) < 0) {
+                strcpy(winner, names[i]);
+            }
+        }
+    }
+
+    printf("%s %d", winner, maxVotes);
+
+    return 0;
+}

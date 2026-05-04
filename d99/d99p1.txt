@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int pos;
+    int speed;
+} Car;
+
+int cmp(const void *a, const void *b) {
+    Car *x = (Car *)a;
+    Car *y = (Car *)b;
+    return y->pos - x->pos; // descending
+}
+
+int main() {
+    int n, target;
+    scanf("%d %d", &n, &target);
+
+    Car cars[n];
+
+    for (int i = 0; i < n; i++)
+        scanf("%d", &cars[i].pos);
+
+    for (int i = 0; i < n; i++)
+        scanf("%d", &cars[i].speed);
+
+    qsort(cars, n, sizeof(Car), cmp);
+
+    float fleets[n];
+    int count = 0;
+
+    for (int i = 0; i < n; i++) {
+        float time = (float)(target - cars[i].pos) / cars[i].speed;
+
+        if (count == 0 || time > fleets[count - 1]) {
+            fleets[count++] = time;
+        }
+    }
+
+    printf("%d", count);
+
+    return 0;
+}
