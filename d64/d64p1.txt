@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 1000
+
+int visited[MAX];
+
+void BFS(int n, int** adj, int* adjSize, int s) {
+    int queue[MAX];
+    int front = 0, rear = 0;
+
+    for (int i = 0; i < n; i++)
+        visited[i] = 0;
+
+    // start from source
+    queue[rear++] = s;
+    visited[s] = 1;
+
+    while (front < rear) {
+        int node = queue[front++];
+        printf("%d ", node);
+
+        for (int i = 0; i < adjSize[node]; i++) {
+            int nei = adj[node][i];
+
+            if (!visited[nei]) {
+                visited[nei] = 1;
+                queue[rear++] = nei;
+            }
+        }
+    }
+}

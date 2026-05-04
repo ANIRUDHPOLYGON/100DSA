@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+struct TreeNode* LCA(struct TreeNode* root, int p, int q) {
+    while (root != NULL) {
+        if (p < root->val && q < root->val)
+            root = root->left;
+        else if (p > root->val && q > root->val)
+            root = root->right;
+        else
+            return root;
+    }
+    return NULL;
+}

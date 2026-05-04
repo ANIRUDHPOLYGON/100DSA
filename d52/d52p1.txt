@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+struct TreeNode* LCA(struct TreeNode* root, int p, int q) {
+    if (root == NULL) return NULL;
+
+    if (root->val == p || root->val == q)
+        return root;
+
+    struct TreeNode* left = LCA(root->left, p, q);
+    struct TreeNode* right = LCA(root->right, p, q);
+
+    if (left != NULL && right != NULL)
+        return root;
+
+    return (left != NULL) ? left : right;
+}

@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define OFFSET 2000   // shift for negative HD
+#define SIZE 4000
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+struct QueueNode {
+    struct TreeNode* node;
+    int hd;
+};
+
+struct Queue {
+    struct QueueNode arr[10000];
+    int front, rear;
+};
+
+void push(struct Queue* q, struct TreeNode* node, int hd) {
+    q->arr[q->rear].node = node;
+    q->arr[q->rear].hd = hd;
+    q->rear++;
+}
+
+struct QueueNode pop(struct Queue* q) {
+    return q->arr[q->front++];
+}
+
+int empty(struct Queue* q) {
+    return q->front == q->rear;
+}
+
+/* store result */
+int result[SIZE][1000];
+int colSize[SIZE];
+int minHD = SIZE, maxHD = 0;
+
+void verticalOrder(struct TreeNode* root) {
+    if (!root) return;
+
+    struct Queue q;
+    q.front = q.rear = 0;
+
+    push(&q, root, 0);
+
+    while (!empty(&q)) {
+        struct QueueNode cur = pop(&q);
+        struct TreeNode* node = cur.node;
+        int hd = cur.hd;
+
+        int idx = hd + OFFSET;
+
+        result[idx][colSize[idx]++] = node->val;
+
+        if (hd < minHD) minHD = hd;
+        if (hd > maxHD) maxHD = hd;
+
+        if (node->left)
+            push(&q, node->left, hd - 1);
+        if (node->right)
+            push(&q, node->right, hd + 1);
+    }
+
+    for (int i = minHD + OFFSET; i <= maxHD + OFFSET; i++) {
+        for (int j = 0; j < colSize[i]; j++) {
+            printf("%d ", result[i][j]);
+        }
+        printf("\n");
+    }
+}

@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+/* result storage */
+int result[100];
+int idx = 0;
+
+void dfs(struct TreeNode* root, int depth) {
+    if (!root) return;
+
+    // first node at this depth = rightmost visible
+    if (depth == idx) {
+        result[idx++] = root->val;
+    }
+
+    dfs(root->right, depth + 1);
+    dfs(root->left, depth + 1);
+}
+
+int* rightSideView(struct TreeNode* root, int* returnSize) {
+    idx = 0;
+    dfs(root, 0);
+    *returnSize = idx;
+    return result;
+}

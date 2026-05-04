@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+int postIndex;
+
+/* value -> inorder index mapping */
+#define OFFSET 3000
+#define SIZE 7001
+
+int inorderIndex[SIZE];
+
+struct TreeNode* createNode(int val) {
+    struct TreeNode* node = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    node->val = val;
+    node->left = node->right = NULL;
+    return node;
+}
+
+struct TreeNode* build(int inorder[], int postorder[], int left, int right) {
+    if (left > right) return NULL;
+
+    int rootVal = postorder[postIndex--];
+    struct TreeNode* root = createNode(rootVal);
+
+    int idx = inorderIndex[rootVal + OFFSET];
+
+    /* IMPORTANT: right first */
+    root->right = build(inorder, postorder, idx + 1, right);
+    root->left  = build(inorder, postorder, left, idx - 1);
+
+    return root;
+}

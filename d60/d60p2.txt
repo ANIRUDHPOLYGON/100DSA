@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+int cameras = 0;
+
+int dfs(struct TreeNode* root) {
+    if (!root) return 1; // null is covered
+
+    int left = dfs(root->left);
+    int right = dfs(root->right);
+
+    if (left == 2 || right == 2) {
+        cameras++;
+        return 0; // place camera here
+    }
+
+    if (left == 0 || right == 0)
+        return 1; // covered
+
+    return 2; // not covered
+}
+
+int minCameraCover(struct TreeNode* root) {
+    cameras = 0;
+
+    if (dfs(root) == 2)
+        cameras++;
+
+    return cameras;
+}

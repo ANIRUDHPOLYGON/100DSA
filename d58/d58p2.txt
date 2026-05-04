@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+int preIndex = 0;
+
+/* simple hash map using array (value range given small) */
+#define OFFSET 3000
+#define SIZE 7001
+
+int inorderIndex[SIZE];
+
+struct TreeNode* createNode(int val) {
+    struct TreeNode* node = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    node->val = val;
+    node->left = node->right = NULL;
+    return node;
+}
+
+struct TreeNode* build(int preorder[], int inorder[], int left, int right) {
+    if (left > right) return NULL;
+
+    int rootVal = preorder[preIndex++];
+    struct TreeNode* root = createNode(rootVal);
+
+    int idx = inorderIndex[rootVal + OFFSET];
+
+    root->left = build(preorder, inorder, left, idx - 1);
+    root->right = build(preorder, inorder, idx + 1, right);
+
+    return root;
+}

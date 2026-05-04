@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+#define MAX 2000
+
+struct TreeNode* queue[MAX];
+int front = 0, rear = 0;
+
+void push(struct TreeNode* node) {
+    queue[rear++] = node;
+}
+
+struct TreeNode* pop() {
+    return queue[front++];
+}
+
+int empty() {
+    return front == rear;
+}
+
+void rightView(struct TreeNode* root) {
+    if (!root) return;
+
+    push(root);
+
+    while (!empty()) {
+        int size = rear - front;
+        struct TreeNode* node = NULL;
+
+        for (int i = 0; i < size; i++) {
+            node = pop();
+
+            if (node->left) push(node->left);
+            if (node->right) push(node->right);
+        }
+
+        // last node of level
+        printf("%d ", node->val);
+    }
+}
